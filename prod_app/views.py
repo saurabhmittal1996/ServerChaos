@@ -25,11 +25,13 @@ def cpu(request):
     stdout=subprocess.PIPE, 
     stderr=subprocess.PIPE )
     cpu_util = process.stdout.read()
+    print(cpu_util)
+    print("\n")
     cpu_obj = Cpu.objects.create(percent_util_cpu = float(cpu_util))
     # print type(process.stdout.read())
     cpu_obj.save()
-    if float(cpu_util) > 80:
-        cpu_str = "Cpu Utilization is" + str(cpu_util)
+    if float(cpu_util) > 30:
+        cpu_str = "Cpu Utilization is " + str(float(cpu_util)) + "%."
         sendmail(cpu_str)
     return HttpResponse(cpu_util)
 
@@ -47,7 +49,7 @@ def mem(request):
     # print type(process.stdout.read())
     mem_obj.save()
     if float(mem_util) > 80:
-        mem_str = "mem Utilization is " + str(float(mem_util))
+        mem_str = "mem Utilization is " + str(float(mem_util)) + "%."
         sendmail(mem_str)
     return HttpResponse(mem_util)
 
@@ -63,7 +65,7 @@ def db(request):
     # print type(process.stdout.read())
     db_obj.save()
     if db_util > 30:
-        db_str = "Database Utilization is " + str(float(db_util))
+        db_str = "Database Utilization is " + str(float(db_util)) + "%."
         sendmail(db_str)
     return HttpResponse(db_util);
     
@@ -78,8 +80,8 @@ def maxcpu(request):
         a=a.decode("utf-8") 
         stri = a.split()
         json_str['Process ID'] = stri[0]
-        json_str['CPU Utilization'] = stri[1]
         json_str['Process Name'] = stri[2]
+        json_str['% CPU Utilization'] = stri[1]
         arr_cpu.append(json_str)
     return JsonResponse(arr_cpu,safe=False)
 
@@ -97,8 +99,8 @@ def maxmem(request):
         a=a.decode("utf-8")
         stri = a.split();
         json_str['Process ID'] = stri[0]
-        json_str['Memory Utilization'] = stri[1]
         json_str['Process Name'] = stri[2]
+        json_str['% Memory Utilization'] = stri[1]
         arr_mem.append(json_str)
     return JsonResponse(arr_mem,safe=False)
 
