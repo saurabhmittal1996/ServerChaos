@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+</head>
+<body>
+
+<h2>Give me more data!</h2>
+
+<table>
+  <tr>
+    <th>Cpu Utilization</th>
+    <th>Time</th>
+  </tr>
+  {% for item in cpu_lists %}
+  <tr>
+    <td>{{item.percent_util_cpu}}</td>
+    <td>{{item.time_cpu}}</td>
+  </tr>
+ {% endfor %} 
+</table>
+
+<table>
+  <tr>
+    <th>Memory Utilization</th>
+    <th>Time</th>
+  </tr>
+  {% for item in mem_lists %}
+  <tr>
+    <td>{{item.percent_util_mem}}</td>
+    <td>{{item.time_mem}}</td>
+  </tr>
+ {% endfor %} 
+</table>
+
+<table>
+  <tr>
+    <th>Database Utilization</th>
+    <th>Time</th>
+  </tr>
+  {% for item in db_lists %}
+  <tr>
+    <td>{{item.percent_util_db}}</td>
+    <td>{{item.time_db}}</td>
+  </tr>
+ {% endfor %} 
+</table>
+
+</body>
+</html>
