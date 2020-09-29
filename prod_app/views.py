@@ -28,8 +28,12 @@ def cpu(request):
     cpu_obj = Cpu.objects.create(percent_util_cpu = float(cpu_util))
     # print type(process.stdout.read())
     cpu_obj.save()
+    if float(cpu_util) > 80:
+        cpu_str = "Cpu Utilization is" + str(cpu_util)
+        sendmail(cpu_str)
     return HttpResponse(cpu_util)
 
+# top -b -n1 | grep ^%Cpu | awk '{print 100-$8}'
    
 
 def mem(request):
@@ -42,6 +46,9 @@ def mem(request):
     mem_obj = Mem.objects.create(percent_util_mem = float(mem_util))
     # print type(process.stdout.read())
     mem_obj.save()
+    if float(mem_util) > 80:
+        mem_str = "mem Utilization is " + str(float(mem_util))
+        sendmail(mem_str)
     return HttpResponse(mem_util)
 
   
@@ -55,8 +62,9 @@ def db(request):
     db_obj = Db.objects.create(percent_util_db =db_util)
     # print type(process.stdout.read())
     db_obj.save()
-    if db_util > 60:
-        sendmail()
+    if db_util > 30:
+        db_str = "Database Utilization is " + str(float(db_util))
+        sendmail(db_str)
     return HttpResponse(db_util);
     
 def maxcpu(request):
@@ -111,7 +119,7 @@ def GetMemView(request):
 
 
 
-def sendmail():
+def sendmail(msg):
     subject_template_name = 'Prod Alert';
     fromaddr = "mishijain1605@gmail.com"
     toaddr = "mishijain1605@gmail.com"
@@ -119,7 +127,7 @@ def sendmail():
     mail['From'] = fromaddr
     mail['To'] = toaddr
     mail['Subject'] = subject_template_name
-    body = "You are recieving this email because the process has utilized maximum cpu"
+    body = "You are recieving this email because the system has observed that " + msg 
     mail.attach(MIMEText(body, 'plain'))
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()

@@ -9,6 +9,217 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Resource Monitor</title>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+</head>
+<style>
+    .table{
+      table-layout:auto;
+    }
+    .content tr,
+    .content td{
+    border-collapse:separate;
+    border-spacing:0 10px;
+    margin: 25px 0;
+    font-size: 1.05em;
+    border-radius: 5px 5px 0 0;
+    border-left:5px solid #ffffff;
+    overflow:hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+   }
+  .content thead {
+    background-color: #003B70;
+    color:#ffffff;
+    text-align:center;
+    font-size:1.30em;
+    font-weight: bold;
+    margin: 25px 25px;
+    border:10px solid red;
+  }
+  .content th,
+  .content td{
+    padding 12px 15px ;
+  }
+  .content tbody tr{
+    border-bottom:1px solid #dddddd;
+  }
+  .content tbody tr:nth-of-type(even){
+    background-color:#f3f3f3;
+    
+  }
+  .content tbody tr:last-of-type{
+    border-bottom:2px solid #009879;
+  }
+
+    .container {
+        width: 33%;
+        height: 70%;
+    }
+
+    .containertable {
+        width: 50%;
+        height: 50%;
+    }
+
+    .aParent{
+    float: left;
+    padding-top: 2%;
+    height: 50%;
+
+    
+}
+.aChild div {
+    float: left;
+    clear: none; 
+    padding:50%;
+    
+}
+.center {
+  margin: auto;
+  width: 7%;
+  margin-left: 13%;
+  margin-right: 13%;
+  position:absolute;
+  top: 6px;
+  left: 0;
+}
+
+.chartContainer{
+    width:33%;
+    display: inline-block;
+}
+
+.labelContainer{
+    width:6%;
+    margin:13% 0%;
+    display: inline-block;
+}
+
+.header{
+    overflow: hidden;
+  background-color: #003B70;
+  padding: 10px 10px;
+  margin: 2px 2px;
+  height: 8%;
+  position: relative;
+
+}
+
+.chartFooter{
+    overflow: hidden;
+  padding: 10px 10px;
+
+}
+
+.titleCenter {
+  margin: auto;
+  width: 7%;
+  margin-left: 13%;
+  margin-right: 13%;
+}
+
+.chartTitle div {
+    float: left;
+    clear: none; 
+    padding:50%;
+    
+}
+
+.wrapper{
+    position: relative;
+}
+
+
+</style>
+<body>
+
+    <div class="header">
+        <img src="https://online.citi.com/GFC/branding/img/Citi-Enterprise-White.png" alt="citilogo" height="40px">
+        <!-- <img src="https://storage.googleapis.com/kaggle-competitions/kaggle/11117/logos/header.png" alt="citiheader" height="10%"> -->
+        <!-- <p style="text-align: center; color: #D9261C;" >
+            <b> CITI</b>
+        </p> -->
+        <p id="sysclock" style="float: right; color: white;">
+        </p>
+        <button id="hbtn" style="position: absolute; top: 48px; right: 10px;background-color: #4CAF50;border: none;
+        color: white;text-align: center;" onclick="window.open('/history', '_blank')">
+            History
+        </button>
+    </div>
+    <div class="chartContainer">
+        <div class="wrapper">
+            <!-- <button id="cpuBtn" class="center"  onclick="updateCpu()"></button> -->
+            <canvas id="cpu" width="200" height="300"></canvas>
+        </div>
+        
+    </div>
+    <div class="chartContainer">
+        <div class="wrapper">
+            <!-- <button id="memBtn" class="center" onclick="updateMem()"></button> -->
+            <canvas id="mem" width="200" height="300"></canvas>
+        </div>
+    </div>
+    <div class="chartContainer">
+        <div class="wrapper">
+            <!-- <button id="dbBtn" class="center" onclick="updateDB()"></button> -->
+            <canvas id="dbtrend" width="200" height="300"></canvas>
+        </div>
+    </div>
+
+    <!-- <p style="display:inline-block; width: 5%; margin-left: 16.8%;margin-right: 14%;"> CPU</p>
+    <p style="display:inline-block; width: 5%; margin-left: 14%; margin-right: 14%;"> mem</p>
+    <p style="display:inline-block; width: 5%; margin-right: 16.8%; margin-left: 14%;"> db</p> -->
+
+    <!-- <p style="display:inline-block; width: 33%; text-align: center;"> CPU</p>
+    <p style="display:inline-block; width: 33%; text-align: center;"> mem</p>
+    <p style="display:inline-block; width: 33%; text-align: center;"> db</p> -->
+
+    <!-- <div class="chartFooter">
+        <div class="chartTitle">
+            <p class="titleCenter">CPU</p>
+        </div>
+        <div class="chartTitle">
+            <p class="titleCenter"> MEM</p>
+        </div>
+        <div class="chartTitle">
+            <p class="titleCenter"> DB</p>
+        </div>
+    </div> -->
+    
+    <table style="margin: auto;"><tr><td style="padding: 0px 20px 0px 0px;">
+        <p id="topcpu" class="content">
+            CPU consumption
+        </p>
+        </td><td style="padding: 0px 0px 0px 2px;">
+            <p id="topmem" class="content">
+                Memory Utilization 
+            </p>
+        </td></tr></table>
+    </table>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="{% static 'js/myChart.js' %}" type="text/javascript"></script>
+<!--<script src="{% static 'myChart.js' %}"></script> -->
+</html>
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+     
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Resource Monitor</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <style>
     .content{
@@ -120,3 +331,4 @@
 </html>
 
 
+ -->
