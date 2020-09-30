@@ -1,3 +1,4 @@
+
 from django.shortcuts import render
 
 # Create your views here.
@@ -14,29 +15,47 @@ def index(request):
     return render(request,'index.html')
 
 def history(request):
-    Cpu_lists = Cpu.objects.all().order_by('-time_cpu')[:10]
-    Mem_lists = Mem.objects.all().order_by('-time_mem')[:10]
-    Db_lists = Db.objects.all().order_by('-time_db')[:10]
+    Cpu_lists = Cpu.objects.all().order_by('-time_cpu')[:100]
+    Mem_lists = Mem.objects.all().order_by('-time_mem')[:100]
+    Db_lists = Db.objects.all().order_by('-time_db')[:100]
     return render(request, 'history.html', {'cpu_lists' : Cpu_lists, 'mem_lists': Mem_lists, 'db_lists':Db_lists} )
 
+cir_arr_cpu = [0,0,0,0]
+avg_cpu_util = 0
+counter_cpu = 0
+
+
 def cpu(request):
-    process = subprocess.Popen('top -b -n1 | grep ^%Cpu | awk \'{print 100-$8}\'', 
+    process = subprocess.Popen('top -b -n1 | grep %Cpu | awk \'{print 100-$8}\'', 
     shell=True, 
     stdout=subprocess.PIPE, 
     stderr=subprocess.PIPE )
     cpu_util = process.stdout.read()
     print(cpu_util)
     print("\n")
-    cpu_obj = Cpu.objects.create(percent_util_cpu = float(cpu_util))
-    # print type(process.stdout.read())
-    cpu_obj.save()
-    if float(cpu_util) > 30:
-        cpu_str = "Cpu Utilization is " + str(float(cpu_util)) + "%."
-        sendmail(cpu_str)
-    return HttpResponse(cpu_util)
 
-# top -b -n1 | grep ^%Cpu | awk '{print 100-$8}'
+    global counter_cpu
+    global avg_cpu_util
+    global cir_arr_cpu
+
+    cpu_obj = Cpu.objects.create(percent_util_cpu = float(cpu_util))
+    cpu_obj.save()
+
+    cir_arr_cpu[counter_cpu % 4] = float(cpu_util)
+    avg_cpu_util = (cir_arr_cpu[0] + cir_arr_cpu[1] + cir_arr_cpu[2] + cir_arr_cpu[3]) / 4
+    counter_cpu = counter_cpu + 1
+
+    if float(avg_cpu_util) > 40:                   
+        cpu_str = "Cpu Utilization is " + str(float(cpu_util)) + "%" + " on " + cpu_obj.time_cpu.strftime("%d %B,%Y,%H:%M:%S")
+        print(cpu_str)
+        # sendmail(cpu_str)
+
+    return HttpResponse(cpu_util)
    
+
+cir_arr_mem = [0,0,0,0]
+mem_count = 0
+avg_mem = 0
 
 def mem(request):
 
@@ -46,14 +65,25 @@ def mem(request):
     stderr=subprocess.PIPE )
     mem_util = process.stdout.read()
     mem_obj = Mem.objects.create(percent_util_mem = float(mem_util))
-    # print type(process.stdout.read())
     mem_obj.save()
-    if float(mem_util) > 80:
-        mem_str = "mem Utilization is " + str(float(mem_util)) + "%."
-        sendmail(mem_str)
+
+    global cir_arr_mem 
+    global mem_count 
+    global avg_mem 
+    
+    cir_arr_mem[mem_count % 4] = float(mem_util)
+    avg_mem = (cir_arr_mem[0] + cir_arr_mem[1] + cir_arr_mem[2] + cir_arr_mem[3]) / 4
+    mem_count = mem_count + 1
+    if float(avg_mem) > 10:
+        mem_str = "Mem Utilization is " + str(float(mem_util)) + "%" + " on " + mem_obj.time_mem.strftime("%d %B,%Y,%H:%M:%S")
+        print(mem_str)
+        # sendmail(mem_str)
     return HttpResponse(mem_util)
 
-  
+
+cir_arr_db = [0,0,0,0]
+db_count = 0
+avg_db = 0
 
 def db(request):
     #TO DO: Returns a random number that may or may not be db trend :)
@@ -62,11 +92,19 @@ def db(request):
     import random
     db_util = random.randint(20,90)
     db_obj = Db.objects.create(percent_util_db =db_util)
-    # print type(process.stdout.read())
     db_obj.save()
-    if db_util > 30:
-        db_str = "Database Utilization is " + str(float(db_util)) + "%."
-        sendmail(db_str)
+
+    global cir_arr_db
+    global db_count
+    global avg_db 
+    cir_arr_db[db_count % 4] = float(db_util)
+    avg_db = (cir_arr_db[0] + cir_arr_db[1] + cir_arr_db[2] + cir_arr_db[3]) / 4
+    db_count = db_count + 1
+
+    if db_util >=10:
+        db_str = "Database Utilization is " + str(float(db_util)) + "%" + " on " + db_obj.time_db.strftime("%d %B,%Y,%H:%M:%S")
+        print(db_str)
+        # sendmail(db_str)
     return HttpResponse(db_util);
     
 def maxcpu(request):
