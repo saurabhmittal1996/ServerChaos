@@ -2,14 +2,14 @@ function cpuChart(data, labels, ele) {
     
 }
 
-var cdata_cpu = [];
-var clabel_cpu = [];
+var cdata_cpu = [0,0,0,0,0,0,0];
+var clabel_cpu = ['12:00:01','12:00:16','12:00:31','12:00:46','12:01:01','12:01:16','12:01:31',];
 
-var cdata_mem = [];
-var clabel_mem = [];
+var cdata_mem = [0,0,0,0,0,0,0];
+var clabel_mem = ['12:00:01','12:00:16','12:00:31','12:00:46','12:01:01','12:01:16','12:01:31',];
 
-var cdata_db = [];
-var clabel_db = [];
+var cdata_db = [0,0,0,0,0,0,0];
+var clabel_db = ['12:00:01','12:00:16','12:00:31','12:00:46','12:01:01','12:01:16','12:01:31',];
 
 var ctx = document.getElementById("cpu").getContext('2d');
     var myChart1 = new Chart(ctx, {
@@ -40,8 +40,6 @@ var ctx = document.getElementById("cpu").getContext('2d');
                 }],
                 xAxes: [{
                     ticks: {
-                        autoSkip: true,
-                        maxTicksLimit: 5,
                         maxRotation: 0,
                     },
                     scaleLabel: {
@@ -81,6 +79,8 @@ var ctx = document.getElementById("cpu").getContext('2d');
         nlabel = date.getHours()+':'+ (date.getMinutes()<10?'0':'')+date.getMinutes()+':'+(date.getSeconds()<10?'0':'')+date.getSeconds();
         myChart1.data.datasets[0].data.push(response.data);
         myChart1.data.labels.push(nlabel);
+        myChart1.data.datasets[0].data.shift();
+        myChart1.data.labels.shift();
         myChart1.update();
         console.log(response);
     })
@@ -125,8 +125,7 @@ var ctx = document.getElementById("mem").getContext('2d');
                 }],
                 xAxes: [{
                     ticks: {
-                        autoSkip: true,
-                        maxTicksLimit: 5,
+                        autoSkip: false,
                         maxRotation: 0,
                     },
                     scaleLabel: {
@@ -161,6 +160,8 @@ var ctx = document.getElementById("mem").getContext('2d');
         
         myChart2.data.datasets[0].data.push(response.data);
         myChart2.data.labels.push(nlabel);
+        myChart2.data.datasets[0].data.shift();
+        myChart2.data.labels.shift();
         myChart2.update();
         console.log(response);
     })
@@ -199,8 +200,7 @@ var ctx = document.getElementById("dbtrend").getContext('2d');
                 }],
                 xAxes: [{
                     ticks: {
-                        autoSkip: true,
-                        maxTicksLimit: 5,
+                        autoSkip: false,
                         maxRotation: 0,
                     },
                     scaleLabel: {
@@ -234,6 +234,8 @@ var ctx = document.getElementById("dbtrend").getContext('2d');
         nlabel = date.getHours()+':'+ (date.getMinutes()<10?'0':'')+date.getMinutes()+':'+(date.getSeconds()<10?'0':'')+date.getSeconds();
         myChart3.data.datasets[0].data.push(response.data);
         myChart3.data.labels.push(nlabel);
+        myChart3.data.datasets[0].data.shift();
+        myChart3.data.labels.shift();
         myChart3.update();
         console.log(response);
     })
@@ -257,7 +259,7 @@ var ctx = document.getElementById("dbtrend").getContext('2d');
         myChart3.update();
  };
 
-    initDate();
+    // initDate();
      updateCpu();
   updateMem();
  updateDB();

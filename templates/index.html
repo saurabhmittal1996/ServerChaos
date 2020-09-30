@@ -33,14 +33,15 @@
     background-color: #003B70;
     color:#ffffff;
     text-align:center;
-    font-size:1.30em;
+    font-size:1.15em;
     font-weight: bold;
     margin: 25px 25px;
     border:10px solid red;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
   }
   .content th,
   .content td{
-    padding 12px 15px ;
+    padding: 2px 10px ;
   }
   .content tbody tr{
     border-bottom:1px solid #dddddd;
@@ -102,7 +103,7 @@
   background-color: #003B70;
   padding: 10px 10px;
   margin: 2px 2px;
-  height: 8%;
+  height: 4%;
   position: relative;
 
 }
@@ -136,17 +137,20 @@
 <body>
 
     <div class="header">
-        <img src="https://online.citi.com/GFC/branding/img/Citi-Enterprise-White.png" alt="citilogo" height="40px">
+        <!-- <img src="https://online.citi.com/GFC/branding/img/Citi-Enterprise-White.png" alt="citilogo" height="40px"> -->
         <!-- <img src="https://storage.googleapis.com/kaggle-competitions/kaggle/11117/logos/header.png" alt="citiheader" height="10%"> -->
         <!-- <p style="text-align: center; color: #D9261C;" >
             <b> CITI</b>
         </p> -->
-        <p id="sysclock" style="float: right; color: white;">
+        <p id="sysclock" style="float: right; color: white; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
         </p>
-        <button id="hbtn" style="position: absolute; top: 48px; right: 10px;background-color: #4CAF50;border: none;
+        <button id="hbtn" style="position: absolute;height: 30px; top: 25px; left: 10px;background-color: #003B70; border: white 3px;
         color: white;text-align: center;" onclick="window.open('/history', '_blank')">
-            History
+        <i class="fa fa-history fa-2x" aria-hidden="true"></i>
         </button>
+        <p style="color: white; text-align: center; padding-left: 10px; position: absolute; top:10px; left: 550px; font-weight: bold; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; font-size: 20px;">
+            System Monitoring Dashboard
+        </p>
     </div>
     <div class="chartContainer">
         <div class="wrapper">
@@ -187,16 +191,35 @@
             <p class="titleCenter"> DB</p>
         </div>
     </div> -->
-    
-    <table style="margin: auto;"><tr><td style="padding: 0px 20px 0px 0px;">
-        <p id="topcpu" class="content">
-            CPU consumption
-        </p>
-        </td><td style="padding: 0px 0px 0px 2px;">
-            <p id="topmem" class="content">
-                Memory Utilization 
-            </p>
-        </td></tr></table>
+    <table>
+        <tr>
+            
+        </tr>
+    </table>
+    <table style="margin: auto;">
+        <tr>
+            <td>
+                <p style="text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; font-weight: bold; font-size: medium; margin: 0px 0px;">Processes with Maximum CPU Utilization</p>
+            </td>
+            <td>
+                <p style="text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; font-weight: bold; font-size: medium; margin: 0px 0px;">Processes with Maximum Memory Utilization</p>
+            </td>
+            <td>
+                <p style="text-align: center;"></p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0px 20px 0px 0px;">
+                <p id="topcpu" class="content">
+                    CPU consumption
+                </p>
+            </td>
+            <td style="padding: 0px 0px 0px 2px;">
+                <p id="topmem" class="content">
+                    Memory Utilization 
+                </p>
+            </td>
+        </tr>
     </table>
 </body>
 
@@ -326,7 +349,7 @@
 <script src="https://unpkg.com/axios@0.20.0/dist/axios.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="{% static 'js/myChart.js' %}" type="text/javascript"></script>
-<!--<script src="{% static 'myChart.js' %}"></script> -->
+<script src="{% static 'myChart.js' %}"></script>
 
 </html>
 
