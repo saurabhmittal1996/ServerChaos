@@ -1,5 +1,6 @@
 
 from django.shortcuts import render
+import threading
 
 # Create your views here.
 from rest_framework.response import Response
@@ -48,9 +49,11 @@ def cpu(request):
 
     if float(avg_cpu_util) > 40:                   
         cpu_str = "Cpu Utilization is " + str(float(cpu_util)) + "%" + " on " + cpu_obj.time_cpu.strftime("%d %B,%Y,%H:%M:%S")
-        print(cpu_str)
+        # print(cpu_str)
+        mThread = threading.Thread(target=sendmail, args=(cpu_str,))
+        mThread.start()
         # sendmail(cpu_str)
-
+    print(cpu_util)
     return HttpResponse(cpu_util)
    
 
@@ -77,8 +80,11 @@ def mem(request):
     mem_count = mem_count + 1
     if float(avg_mem) > 10:
         mem_str = "Mem Utilization is " + str(float(mem_util)) + "%" + " on " + mem_obj.time_mem.strftime("%d %B,%Y,%H:%M:%S")
-        print(mem_str)
+        # print(mem_str)
+        mThread = threading.Thread(target=sendmail, args=(mem_str,))
+        mThread.start()
         # sendmail(mem_str)
+    print(mem_util)
     return HttpResponse(mem_util)
 
 
@@ -105,10 +111,13 @@ def db(request):
     if db_util >=10:
         db_str = "Database Utilization is " + str(float(db_util)) + "%" + " on " + db_obj.time_db.strftime("%d %B,%Y,%H:%M:%S")
         print(db_str)
-        # thread = threading.Thread(target = sendmail(db_str))
-        # thread.start()
+
+        mThread = threading.Thread(target=sendmail, args=(db_str,))
+        mThread.start()
+
         # sendmail(db_str)
-    return HttpResponse(db_util);
+    print(db_util)
+    return HttpResponse(db_util)
     
 def maxcpu(request):
     process = subprocess.Popen('ps -eo pid,%cpu,cmd --sort=-%cpu | head -n 6 | tail -n 5', 
@@ -162,6 +171,9 @@ def GetMemView(request):
 
 
 def sendmail(msg):
+    import time
+    time.sleep(2)
+    print('I have waited for 2 seconds and the message is: '+msg)
     subject_template_name = 'Prod Alert';
     fromaddr = "mishijain1605@gmail.com"
     toaddr = "mishijain1605@gmail.com"
@@ -179,6 +191,6 @@ def sendmail(msg):
     text = mail.as_string()
     server.sendmail(fromaddr, toaddr, text)
     server.quit()
-    # return Response("Mail sent")
+    return Response("Mail sent")
    
 
