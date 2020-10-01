@@ -10,6 +10,7 @@ import subprocess
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import threading
 
 def index(request):
     return render(request,'index.html')
@@ -104,6 +105,8 @@ def db(request):
     if db_util >=10:
         db_str = "Database Utilization is " + str(float(db_util)) + "%" + " on " + db_obj.time_db.strftime("%d %B,%Y,%H:%M:%S")
         print(db_str)
+        # thread = threading.Thread(target = sendmail(db_str))
+        # thread.start()
         # sendmail(db_str)
     return HttpResponse(db_util);
     
@@ -158,7 +161,6 @@ def GetMemView(request):
 
 
 
-
 def sendmail(msg):
     subject_template_name = 'Prod Alert';
     fromaddr = "mishijain1605@gmail.com"
@@ -178,4 +180,5 @@ def sendmail(msg):
     server.sendmail(fromaddr, toaddr, text)
     server.quit()
     # return Response("Mail sent")
+   
 
