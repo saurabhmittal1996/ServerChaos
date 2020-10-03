@@ -11,6 +11,7 @@ import subprocess
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import threading
 
 def index(request):
     return render(request,'index.html')
@@ -110,8 +111,10 @@ def db(request):
     if db_util >=10:
         db_str = "Database Utilization is " + str(float(db_util)) + "%" + " on " + db_obj.time_db.strftime("%d %B,%Y,%H:%M:%S")
         print(db_str)
+
         mThread = threading.Thread(target=sendmail, args=(db_str,))
         mThread.start()
+
         # sendmail(db_str)
     print(db_util)
     return HttpResponse(db_util)
@@ -167,27 +170,27 @@ def GetMemView(request):
 
 
 
-
 def sendmail(msg):
     import time
     time.sleep(2)
     print('I have waited for 2 seconds and the message is: '+msg)
-    # subject_template_name = 'Prod Alert';
-    # fromaddr = "mishijain1605@gmail.com"
-    # toaddr = "mishijain1605@gmail.com"
-    # mail = MIMEMultipart()
-    # mail['From'] = fromaddr
-    # mail['To'] = toaddr
-    # mail['Subject'] = subject_template_name
-    # body = "You are recieving this email because the system has observed that " + msg 
-    # mail.attach(MIMEText(body, 'plain'))
-    # server = smtplib.SMTP('smtp.gmail.com', 587)
-    # server.ehlo()
-    # server.starttls()
-    # server.ehlo()
-    # server.login(fromaddr, 'mishi@2020')
-    # text = mail.as_string()
-    # server.sendmail(fromaddr, toaddr, text)
-    # server.quit()
-    # return Response("Mail sent")
+    subject_template_name = 'Prod Alert';
+    fromaddr = "mishijain1605@gmail.com"
+    toaddr = "mishijain1605@gmail.com"
+    mail = MIMEMultipart()
+    mail['From'] = fromaddr
+    mail['To'] = toaddr
+    mail['Subject'] = subject_template_name
+    body = "You are recieving this email because the system has observed that " + msg 
+    mail.attach(MIMEText(body, 'plain'))
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.ehlo()
+    server.login(fromaddr, 'mishi@2020')
+    text = mail.as_string()
+    server.sendmail(fromaddr, toaddr, text)
+    server.quit()
+    return Response("Mail sent")
+   
 
