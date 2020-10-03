@@ -1,6 +1,7 @@
 function cpuChart(data, labels, ele) {
     
 }
+var firstTime = true;
 
 var cdata_cpu = [0,0,0,0,0,0,0];
 var clabel_cpu = ['12:00:01','12:00:16','12:00:31','12:00:46','12:01:01','12:01:16','12:01:31',];
@@ -75,7 +76,9 @@ var ctx = document.getElementById("cpu").getContext('2d');
     // responseType: 'json',
 })
     .then(function (response) {
-        date = new Date();
+        oldLabel = myChart1.data.labels[myChart1.data.labels.length-1];
+        date = new Date('2020-10-05 '+oldLabel);
+        date = new Date(date.getTime()+15000);
         nlabel = date.getHours()+':'+ (date.getMinutes()<10?'0':'')+date.getMinutes()+':'+(date.getSeconds()<10?'0':'')+date.getSeconds();
         myChart1.data.datasets[0].data.push(response.data);
         myChart1.data.labels.push(nlabel);
@@ -155,7 +158,9 @@ var ctx = document.getElementById("mem").getContext('2d');
     // responseType: 'json',
 })
     .then(function (response) {
-        date = new Date();
+        oldLabel = myChart2.data.labels[myChart2.data.labels.length-1];
+        date = new Date('2020-10-05 '+oldLabel);
+        date = new Date(date.getTime()+15000);
         nlabel = date.getHours()+':'+ (date.getMinutes()<10?'0':'')+date.getMinutes()+':'+(date.getSeconds()<10?'0':'')+date.getSeconds();
         
         myChart2.data.datasets[0].data.push(response.data);
@@ -230,7 +235,9 @@ var ctx = document.getElementById("dbtrend").getContext('2d');
     // responseType: 'json',
 })
     .then(function (response) {
-        date = new Date();
+        oldLabel = myChart3.data.labels[myChart3.data.labels.length-1];
+        date = new Date('2020-10-05 '+oldLabel);
+        date = new Date(date.getTime()+15000);
         nlabel = date.getHours()+':'+ (date.getMinutes()<10?'0':'')+date.getMinutes()+':'+(date.getSeconds()<10?'0':'')+date.getSeconds();
         myChart3.data.datasets[0].data.push(response.data);
         myChart3.data.labels.push(nlabel);
@@ -246,34 +253,39 @@ var ctx = document.getElementById("dbtrend").getContext('2d');
 };
  function initDate()
  {
-        date = new Date();
-        nlabel = date.getHours()+':'+ (date.getMinutes()<10?'0':'')+date.getMinutes()+':'+(date.getSeconds()<10?'0':'')+date.getSeconds();
-        myChart1.data.datasets[0].data.unshift(0);
-        myChart1.data.labels.unshift(nlabel);
-        myChart1.update();
-        myChart2.data.datasets[0].data.unshift(0);
-        myChart2.data.labels.unshift(nlabel);
-        myChart2.update();
-        myChart3.data.datasets[0].data.unshift(0);
-        myChart3.data.labels.unshift(nlabel);
-        myChart3.update();
+    date = new Date();
+    nlabel = date.getHours()+':'+ (date.getMinutes()<10?'0':'')+date.getMinutes()+':'+(date.getSeconds()<10?'0':'')+date.getSeconds();
+    myChart1.data.datasets[0].data.push(0);
+    myChart1.data.labels.push(nlabel);
+    myChart1.data.datasets[0].data.shift();
+    myChart1.data.labels.shift();
+    myChart1.update();
+
+    myChart2.data.datasets[0].data.push(0);
+    myChart2.data.labels.push(nlabel);
+    myChart2.data.datasets[0].data.shift();
+    myChart2.data.labels.shift();
+    myChart2.update();
+
+    myChart3.data.datasets[0].data.push(0);
+    myChart3.data.labels.push(nlabel);
+    myChart3.data.datasets[0].data.shift();
+    myChart3.data.labels.shift();
+    myChart3.update();
  };
 
-    // initDate();
-     updateCpu();
-  updateMem();
- updateDB();
- doRunmaxcpu();
- doRunmaxmem();
-   setInterval(function() {
+initDate();
+doRunmaxcpu();
+doRunmaxmem();
+
+setInterval(function() {
     updateCpu();
-  updateMem();
- updateDB();
- doRunmaxcpu();
- doRunmaxmem();
-        
+    updateMem();
+    updateDB();
+    doRunmaxcpu();
+    doRunmaxmem();    
     }, 15000
-        );
+);
 
 function doRunmaxcpu() {
     console.log("executed ls");
