@@ -95,9 +95,17 @@ avg_db = 0
 def db(request):
     #TO DO: Returns a random number that may or may not be db trend :)
     #we have to find command for this
-
-    import random
-    db_util = random.randint(20,90)
+    command = '''
+    mysqladmin -u root -pAa@123456789 extended-status 2>&1 | grep -v "Using a password" | grep -wi 'threads_connected\|threads_running' | awk '{ print $2,$4}' | head -n 1 | awk '{ print $2}'
+    '''
+    process = subprocess.Popen(command,
+    shell=True, 
+    stdout=subprocess.PIPE, 
+    stderr=subprocess.PIPE )
+    db_util = process.stdout.read()
+    db_util = float(db_util)
+    # import random
+    # db_util = random.randint(20,90)
     db_obj = Db.objects.create(percent_util_db =db_util)
     db_obj.save()
 
