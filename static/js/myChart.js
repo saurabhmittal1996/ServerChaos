@@ -196,11 +196,12 @@ var ctx = document.getElementById("dbtrend").getContext('2d');
                 yAxes: [{
                     ticks: {
                         beginAtZero: true,  //{}
-                        suggestedMax: 100,
+                        stepSize: 1,
+                        suggestedMax: 5,
                     },
                     scaleLabel: {
                         display: true,
-                        labelString: 'Percentage'
+                        labelString: 'Threads'
                       }
                 }],
                 xAxes: [{
